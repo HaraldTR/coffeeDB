@@ -1,5 +1,5 @@
 """
-ASGI config for coffedb project.
+ASGI config for coffeedb project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'coffedb.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'coffeedb.settings')
 
 application = get_asgi_application()

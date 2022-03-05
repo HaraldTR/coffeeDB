@@ -2,7 +2,7 @@ version: "3.9"
    
 services:
   coffee_db:
-    container_name: coffeBackend
+    container_name: coffee_backend
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
