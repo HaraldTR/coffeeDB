@@ -15,3 +15,9 @@ class RoastedCoffeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoastedCoffee
         fields = '__all__'
+
+class LoginSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CoffeeDrinker
+        fields = ['email', 'password']

@@ -2,7 +2,6 @@ from django.db import models
 
 
 #! TODO hvordan lage join-tabeller og gjøre reverse lookups?
-
 class CoffeeDrinker(models.Model):
     """
     A model for a coffee drinker.

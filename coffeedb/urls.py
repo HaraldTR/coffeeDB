@@ -19,12 +19,13 @@ from django.urls import path, include
 from rest_framework import routers
 from django.conf import settings
 
+from coffeeApp.urls import get_user_coffee_app_router, get_backend_coffee_app_router
 
-from coffeeApp.urls import get_coffee_app_router
-
-coffee_app_router = get_coffee_app_router()
+user_coffee_app_router = get_user_coffee_app_router()
+backend_coffee_app_router = get_backend_coffee_app_router()
 
 urlpatterns = [
-    path("", include(coffee_app_router.urls)),
+    path("user/", include(user_coffee_app_router.urls)),
+    path("backend/", include(backend_coffee_app_router.urls)),
     path("admin/", admin.site.urls),
 ]
