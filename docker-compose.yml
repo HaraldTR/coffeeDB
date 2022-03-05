@@ -6,7 +6,7 @@ services:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "2002:8000"
     environment:
