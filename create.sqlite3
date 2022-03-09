@@ -1,0 +1,57 @@
+BEGIN;
+--
+-- Create model CoffeeBatch
+--
+CREATE TABLE "coffee_batch" ("batch_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "harvest_year" date NOT NULL, "price_pr_kg_usd" integer NOT NULL);
+--
+-- Create model CoffeeDrinker
+--
+CREATE TABLE "coffee_drinker" ("userID" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "full_name" varchar(100) NOT NULL, "country" varchar(40) NOT NULL, "email" varchar(254) NOT NULL, "password" varchar(100) NOT NULL);
+--
+-- Create model CoffeeFarm
+--
+CREATE TABLE "coffee_farm" ("coffee_farm_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(50) NOT NULL, "meters_above_sea" integer NOT NULL, "region" varchar(400) NOT NULL, "country" varchar(400) NOT NULL);
+--
+-- Create model ProcessingType
+--
+CREATE TABLE "processing_type" ("processing_type_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(50) NOT NULL, "description" varchar(400) NOT NULL);
+--
+-- Create model UnprocessedBean
+--
+CREATE TABLE "unprocessed_coffee_bean" ("unprocessed_bean_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "species" varchar(50) NOT NULL);
+--
+-- Create model RoastedCoffee
+--
+CREATE TABLE "roasted_coffee" ("coffee_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "description" varchar(400) NOT NULL, "price_per_kg_nok" integer NOT NULL, "roast_date" date NOT NULL, "batch_id" bigint NULL REFERENCES "coffee_batch" ("batch_id") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model CoffeeTasting
+--
+CREATE TABLE "coffee_tasting" ("tasting_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "notes" varchar(400) NOT NULL, "score" integer NOT NULL, "taste_date" date NOT NULL, "coffee_id_fk_id" bigint NULL REFERENCES "roasted_coffee" ("coffee_id") DEFERRABLE INITIALLY DEFERRED, "user_id_fk_id" bigint NULL REFERENCES "coffee_drinker" ("userID") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Add field coffee_farm to coffeebatch
+--
+CREATE TABLE "new__coffee_batch" ("batch_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "harvest_year" date NOT NULL, "price_pr_kg_usd" integer NOT NULL, "coffee_farm_id" bigint NULL REFERENCES "coffee_farm" ("coffee_farm_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "new__coffee_batch" ("batch_id", "harvest_year", "price_pr_kg_usd", "coffee_farm_id") SELECT "batch_id", "harvest_year", "price_pr_kg_usd", NULL FROM "coffee_batch";
+DROP TABLE "coffee_batch";
+ALTER TABLE "new__coffee_batch" RENAME TO "coffee_batch";
+CREATE INDEX "roasted_coffee_batch_id_80a24e50" ON "roasted_coffee" ("batch_id");
+CREATE INDEX "coffee_tasting_coffee_id_fk_id_731eb9d1" ON "coffee_tasting" ("coffee_id_fk_id");
+CREATE INDEX "coffee_tasting_user_id_fk_id_80f7636b" ON "coffee_tasting" ("user_id_fk_id");
+CREATE INDEX "coffee_batch_coffee_farm_id_64188691" ON "coffee_batch" ("coffee_farm_id");
+--
+-- Add field processing_type to coffeebatch
+--
+CREATE TABLE "new__coffee_batch" ("batch_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "harvest_year" date NOT NULL, "price_pr_kg_usd" integer NOT NULL, "coffee_farm_id" bigint NULL REFERENCES "coffee_farm" ("coffee_farm_id") DEFERRABLE INITIALLY DEFERRED, "processing_type_id" bigint NULL REFERENCES "processing_type" ("processing_type_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "new__coffee_batch" ("batch_id", "harvest_year", "price_pr_kg_usd", "coffee_farm_id", "processing_type_id") SELECT "batch_id", "harvest_year", "price_pr_kg_usd", "coffee_farm_id", NULL FROM "coffee_batch";
+DROP TABLE "coffee_batch";
+ALTER TABLE "new__coffee_batch" RENAME TO "coffee_batch";
+CREATE INDEX "coffee_batch_coffee_farm_id_64188691" ON "coffee_batch" ("coffee_farm_id");
+CREATE INDEX "coffee_batch_processing_type_id_a3ff5f67" ON "coffee_batch" ("processing_type_id");
+--
+-- Add field unprocessed_beans to coffeebatch
+--
+CREATE TABLE "coffee_batch_unprocessed_beans" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "coffeebatch_id" bigint NOT NULL REFERENCES "coffee_batch" ("batch_id") DEFERRABLE INITIALLY DEFERRED, "unprocessedbean_id" bigint NOT NULL REFERENCES "unprocessed_coffee_bean" ("unprocessed_bean_id") DEFERRABLE INITIALLY DEFERRED);
+CREATE UNIQUE INDEX "coffee_batch_unprocessed_beans_coffeebatch_id_unprocessedbean_id_5ea79f87_uniq" ON "coffee_batch_unprocessed_beans" ("coffeebatch_id", "unprocessedbean_id");
+CREATE INDEX "coffee_batch_unprocessed_beans_coffeebatch_id_44fbd2c4" ON "coffee_batch_unprocessed_beans" ("coffeebatch_id");
+CREATE INDEX "coffee_batch_unprocessed_beans_unprocessedbean_id_2edfb782" ON "coffee_batch_unprocessed_beans" ("unprocessedbean_id");
+COMMIT;

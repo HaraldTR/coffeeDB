@@ -39,17 +39,63 @@ class RegisterView(viewsets.ModelViewSet):
     def list(self, request):
         return Response('Create a new user.')
 
-class CoffeeTastingView(viewsets.ModelViewSet):
+class ProcessingTypeView(viewsets.ModelViewSet):
     """
-    View for CoffeeDrinker model
+    View for RoastedCoffee model
     """
-    serializer_class = serializers.CoffeeTastingSerializer
-    queryset = models.CoffeeTasting.objects.all()
+    serializer_class = serializers.ProcessingTypeSerializer
+    queryset = models.ProcessingType.objects.all()
+
+
+class CoffeeFarmView(viewsets.ModelViewSet):
+    """
+    View for RoastedCoffee model
+    """
+    serializer_class = serializers.CoffeeFarmSerializer
+    queryset = models.CoffeeFarm.objects.all()
+
+class UnprocessedBeanView(viewsets.ModelViewSet):
+    """
+    View for RoastedCoffee model
+    """
+    serializer_class = serializers.UnprocessedBeanSerializer
+    queryset = models.UnprocessedBean.objects.all()
+
+class CoffeeBatchView(viewsets.ModelViewSet):
+    """
+    View for RoastedCoffee model
+    """
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.CoffeeBatchListSerializer
+        if self.action == 'create':
+            return serializers.CoffeeBatchSerializer
+    
+    queryset = models.CoffeeBatch.objects.all()
 
 class RoastedCoffeeView(viewsets.ModelViewSet):
     """
     View for RoastedCoffee model
     """
-    serializer_class = serializers.RoastedCoffeeSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.RoastedCoffeeListSerializer
+        if self.action == 'create':
+            return serializers.RoastedCoffeeCreateSerializer
+
     queryset = models.RoastedCoffee.objects.all()
 
+class CoffeeTastingView(viewsets.ModelViewSet):
+    """
+    View for CoffeeDrinker model
+    """
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.CoffeeTastingListSerializer
+        if self.action == 'create':
+            return serializers.CoffeeTastingCreateSerializer
+
+    queryset = models.CoffeeTasting.objects.all()
